@@ -13,11 +13,15 @@ public class MultiModelChatContoller {
 
 	private ChatClient chatClientOpenAI;
 	private ChatClient chatClientOllama;
+	private ChatClient chatClientOllamaDefault;
+	private ChatClient chatClientOpenDefault;
 
-	public MultiModelChatContoller(@Qualifier("openAiChatClient") ChatClient chatClientOpenAI,
-			@Qualifier("ollamaChatClient") ChatClient chatClientOllama) {
+	public MultiModelChatContoller(@Qualifier("openai") ChatClient chatClientOpenAI,
+			@Qualifier("ollama") ChatClient chatClientOllama,@Qualifier("defaultollama") ChatClient chatClientOllamaDefault,@Qualifier("defaultopen") ChatClient chatClientOpenDefault) {
 		this.chatClientOpenAI = chatClientOpenAI;
 		this.chatClientOllama = chatClientOllama;
+		this.chatClientOllamaDefault = chatClientOllamaDefault;
+		this.chatClientOpenDefault = chatClientOpenDefault;
 	}
 
 	@GetMapping("/chat/ollama")
@@ -32,6 +36,18 @@ public class MultiModelChatContoller {
 				"I can only help with Java Spring Boot microservices questions."
 				3. Keep answers short and practical (max 5 bullet points).
 				""").user(prompt).call().content();
+	}
+
+	@GetMapping("/chat/ollama/default")
+	public String chatDefault(@RequestParam("message") String prompt) {
+		System.out.println("------------=====================Calling ollama model default");
+		return chatClientOllamaDefault.prompt().user(prompt).call().content();
+	}
+	
+	@GetMapping("/chat/open/default")
+	public String chatOpenDefault(@RequestParam("message") String prompt) {
+		System.out.println("------------=====================Calling ollama model default");
+		return chatClientOpenDefault.prompt().user(prompt).call().content();
 	}
 
 	@GetMapping("/chat/openai")
