@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class MultimodelChatContoller {
+public class MultiModelChatContoller {
 
 	private ChatClient chatClientOpenAI;
 	private ChatClient chatClientOllama;
 
-	public MultimodelChatContoller(@Qualifier("openAiChatClient") ChatClient chatClientOpenAI,
+	public MultiModelChatContoller(@Qualifier("openAiChatClient") ChatClient chatClientOpenAI,
 			@Qualifier("ollamaChatClient") ChatClient chatClientOllama) {
 		this.chatClientOpenAI = chatClientOpenAI;
 		this.chatClientOllama = chatClientOllama;
