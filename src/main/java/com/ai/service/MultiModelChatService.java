@@ -22,7 +22,7 @@ public class MultiModelChatService {
 	}
 
 	public String chatOllama(String prompt) {
-		System.out.println("------------=====================Calling ollama model");
+		System.out.println("------------=====================Calling ollama model service");
 		return chatClientOllama.prompt().system("""
 				You are a Java Spring Boot microservices expert.
 
@@ -35,12 +35,12 @@ public class MultiModelChatService {
 	}
 
 	public String chatOllamaDefault(String prompt) {
-		System.out.println("------------=====================Calling ollama model default");
+		System.out.println("------------=====================Calling ollama model default service");
 		return chatClientOllamaDefault.prompt().user(prompt).call().content();
 	}
 
 	public String chatOpenAI(String prompt) {
-		System.out.println("------------=====================calling openai model");
+		System.out.println("------------=====================calling openai model service");
 		return chatClientOpenAI.prompt().system("""
 				You are a Java Spring Boot microservices expert.
 
@@ -53,7 +53,7 @@ public class MultiModelChatService {
 	}
 
 	public String chatOpenAIDefault(String prompt) {
-		System.out.println("------------=====================Calling ollama model default");
+		System.out.println("------------=====================Calling ollama model default service");
 		return chatClientOpenDefault.prompt().user(prompt).call().content();
 	}
 

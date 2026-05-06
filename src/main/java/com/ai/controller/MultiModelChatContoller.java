@@ -17,25 +17,25 @@ public class MultiModelChatContoller {
 
 	@GetMapping("/chat/ollama")
 	public String chat(@RequestParam("message") String prompt) {
-		System.out.println("------------=====================Calling ollama model");
+		System.out.println("------------=====================Calling ollama model controller");
 		return multiModelChatService.chatOllama(prompt);
 	}
 
 	@GetMapping("/chat/ollama/default")
 	public String chatDefault(@RequestParam("message") String prompt) {
-		System.out.println("------------=====================Calling ollama model default");
+		System.out.println("------------=====================Calling ollama model default controller");
 		return multiModelChatService.chatOllamaDefault(prompt);
 	}
 
 	@GetMapping("/chat/open/default")
 	public String chatOpenDefault(@RequestParam("message") String prompt) {
-		System.out.println("------------=====================Calling ollama model default");
+		System.out.println("------------=====================Calling ollama model default controller");
 		return multiModelChatService.chatOpenAIDefault(prompt);
 	}
 
 	@GetMapping("/chat/openai")
 	public String askRole(@RequestParam("message") String prompt) {
-		System.out.println("------------=====================calling openai model");
+		System.out.println("------------=====================calling openai model controller");
 		return multiModelChatService.chatOpenAI(prompt);
 	}
 }
