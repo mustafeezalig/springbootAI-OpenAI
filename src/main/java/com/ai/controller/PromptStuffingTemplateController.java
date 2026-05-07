@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ai.service.PromptEmailTemplateService;
+import com.ai.service.PromptStuffingTemplateService;
 
 @RestController
 @RequestMapping("/api")
-public class PromptEmailTemplateController {
+public class PromptStuffingTemplateController {
 
 	@Autowired
-	private PromptEmailTemplateService promptEmailTemplateService;
+	private PromptStuffingTemplateService promptStuffingTemplateService;
 
-	@GetMapping("/email")
-	public String emailTemplate(@RequestParam("customerName") String customerName,
-			@RequestParam("customerMessage") String customerMessage) {
+	@GetMapping("/prompt/stuff")
+	public String emailTemplate(@RequestParam("message") String message) {
 
-		return promptEmailTemplateService.emailTemplate(customerName, customerMessage);
+		return promptStuffingTemplateService.promptStuffingTemplate(message);
 
 	}
 
