@@ -22,7 +22,7 @@ public class PromptStuffingTemplateController {
 
 	@GetMapping("/prompt/stuff")
 	public String emailTemplate(@RequestParam("message") String message) {
-
+       System.out.println("Calling prompt stuff controller");
 		return promptStuffingTemplateService.promptStuffingTemplate(message);
 
 	}

@@ -19,7 +19,7 @@ public class PromptStuffingTemplateService {
 	}
 
 	public String promptStuffingTemplate(String prompt) {
-
+		System.out.println("Calling prompt stuff service");
 		return chatClient
 				.prompt().system(promptTemplate).user(prompt)
 				.call().content();
