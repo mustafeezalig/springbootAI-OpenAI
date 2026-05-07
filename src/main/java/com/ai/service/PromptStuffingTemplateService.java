@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import com.ai.controller.TokenUsageAuditAdivisor;
+
 @Service
 public class PromptStuffingTemplateService {
 
@@ -22,6 +24,7 @@ public class PromptStuffingTemplateService {
 		System.out.println("Calling prompt stuff service");
 		return chatClient
 				.prompt()
+				//.advisors(new TokenUsageAuditAdivisor()) //not recommended here as its common to all calls
 				.system(promptTemplate)
 				.user(prompt)
 				.call().content();
