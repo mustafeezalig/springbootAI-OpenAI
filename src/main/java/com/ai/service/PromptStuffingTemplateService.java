@@ -14,14 +14,16 @@ public class PromptStuffingTemplateService {
 	@Value("classpath:/promptTemplates/systemPromptTemplate.st")
 	private Resource promptTemplate;
 
-	PromptStuffingTemplateService(@Qualifier("ollama") ChatClient chatClientOllama) {
+	PromptStuffingTemplateService(@Qualifier("defaultollama") ChatClient chatClientOllama) {
 		this.chatClient = chatClientOllama;
 	}
 
 	public String promptStuffingTemplate(String prompt) {
 		System.out.println("Calling prompt stuff service");
 		return chatClient
-				.prompt().system(promptTemplate).user(prompt)
+				.prompt()
+				.system(promptTemplate)
+				.user(prompt)
 				.call().content();
 
 	}

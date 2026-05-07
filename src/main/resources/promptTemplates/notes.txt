@@ -1,0 +1,2 @@
+1.Learn Message Roles--System/User/Assistant/Function
+2. Advisor both inbuilt and custom

@@ -1,6 +1,7 @@
 package com.ai.config;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,9 @@ public class ChatClientConfig {
 
 	@Bean("defaultollama")
 	public ChatClient ollamaChatClientDefault(OllamaChatModel model) {
-		return ChatClient.builder(model).defaultSystem("""
+		return ChatClient.builder(model)
+				.defaultAdvisors(new SimpleLoggerAdvisor())
+				.defaultSystem("""
 				    You are an IT Support Assistant specialized in password reset issues.
 				    Rules:
 				    1. Help users reset passwords for email, VPN, Windows, applications.
