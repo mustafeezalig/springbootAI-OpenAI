@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.ai.controller.TokenUsageAuditAdivisor;
 
+import reactor.core.publisher.Flux;
+
 @Service
 public class PromptStuffingTemplateService {
 
@@ -28,6 +30,17 @@ public class PromptStuffingTemplateService {
 				.system(promptTemplate)
 				.user(prompt)
 				.call().content();
+
+	}
+	
+	public Flux<String> promptStuffingStreamTemplate(String prompt) {
+		System.out.println("Calling prompt stuff service");
+		return chatClient
+				.prompt()
+				//.advisors(new TokenUsageAuditAdivisor()) //not recommended here as its common to all calls
+				.system(promptTemplate)
+				.user(prompt)
+				.stream().content();
 
 	}
 }

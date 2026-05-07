@@ -1,3 +1,6 @@
 1.Learn Message Roles--System/User/Assistant/Function
 2. Advisors both inbuilt and custom
 3. Explore more about chatOptions using chatGPT, its very important. Need to implement them
+4. difference between call and stream methods
+5. What is record class in java
+6. Structured return type rather than plain text which is default behavior
