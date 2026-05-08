@@ -3,18 +3,23 @@ package com.ai.config;
 import java.util.List;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.ai.ollama.api.OllamaChatOptions;
 
 import com.ai.controller.TokenUsageAuditAdivisor;
 
 @Configuration
 public class ChatClientConfig {
+
 	@Bean("openai")
 	public ChatClient openAiChatClient(OpenAiChatModel chatModel) {
 		return ChatClient.create(chatModel);
@@ -40,6 +45,16 @@ public class ChatClientConfig {
 						    5. If unrelated, say:
 						       "I can only assist with password reset related issues."
 						""").defaultUser("How can you help me ?").build();
+	}
+
+	//@Primary
+	@Bean("customChatMemory")
+	public ChatClient chatMemoryClient(OpenAiChatModel chatModel, ChatMemory chatMemory) {
+
+		Advisor advisorChatMemory = MessageChatMemoryAdvisor.builder(chatMemory).build();
+
+		return ChatClient.builder(chatModel).defaultAdvisors(List.of(new SimpleLoggerAdvisor(), advisorChatMemory))
+				.build();
 	}
 
 	@Bean("defaultopen")
