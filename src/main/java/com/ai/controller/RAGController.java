@@ -37,7 +37,11 @@ public class RAGController {
 	@GetMapping("/random/chat")
 	public ResponseEntity<String> randomChat(@RequestHeader("username") String username,
 			@RequestParam("message") String message) {
-		SearchRequest searchRequest = SearchRequest.builder().query(message).topK(3).similarityThreshold(0.5).build();
+		SearchRequest searchRequest = SearchRequest.builder()
+				.query(message)
+				.topK(3)
+				.similarityThreshold(.2)
+				.build();
 		List<Document> similarDocs = vectorStore.similaritySearch(searchRequest);
 		String similarContext = similarDocs.stream().map(Document::getText)
 				.collect(Collectors.joining(System.lineSeparator()));
