@@ -12,6 +12,9 @@ import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryReposito
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -60,11 +63,11 @@ public class ChatClientConfig {
 	}
 	
 	@Bean("customChatMemory")
-	public ChatClient chatMemoryClient(OpenAiChatModel chatModel, ChatMemory chatMemory) {
+	public ChatClient chatMemoryClient(OpenAiChatModel chatModel, ChatMemory chatMemory,RetrievalAugmentationAdvisor retrievalAugmentationAdvisor) {
 
 		Advisor advisorChatMemory = MessageChatMemoryAdvisor.builder(chatMemory).build();
 
-		return ChatClient.builder(chatModel).defaultAdvisors(List.of(new SimpleLoggerAdvisor(), advisorChatMemory))
+		return ChatClient.builder(chatModel).defaultAdvisors(List.of(new SimpleLoggerAdvisor(), advisorChatMemory,retrievalAugmentationAdvisor))
 				.build();
 	}
 
@@ -80,5 +83,12 @@ public class ChatClientConfig {
 				    5. If unrelated, say:
 				       "I can only assist with password reset related issues."
 				""").defaultUser("How can you help me ?").build();
+	}
+	
+	//To use this  comment out similarContext and system from controller
+	@Bean
+	public RetrievalAugmentationAdvisor retrievalAugmentationAdvisor(VectorStore vectoreStore) {
+		return RetrievalAugmentationAdvisor.builder().documentRetriever(VectorStoreDocumentRetriever.builder()
+				.vectorStore(vectoreStore).topK(3).similarityThreshold(0.3).build()).build();
 	}
 }

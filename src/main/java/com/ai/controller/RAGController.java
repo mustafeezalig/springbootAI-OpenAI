@@ -23,18 +23,21 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/rag")
 public class RAGController {
 	private ChatClient chatClient;
+	private ChatClient webSearchChatClient;
 	private VectorStore vectorStore;
 
 	@Value("classpath:/promptTemplates/systemPromptRandomDataTemplate.st")
 	private Resource promptTemplate;
-	
+
 	@Value("classpath:/promptTemplates/systemPromptTemplateRag.st")
 	private Resource hrSystemTemplate;
 
-	public RAGController(@Qualifier("customChatMemory") ChatClient chatClient, VectorStore vectorStore) {
+	public RAGController(@Qualifier("customChatMemory") ChatClient chatClient,
+			@Qualifier("webSearchRAGChatClient") ChatClient webSearchChatClient, VectorStore vectorStore) {
 		super();
 		this.chatClient = chatClient;
 		this.vectorStore = vectorStore;
+		this.webSearchChatClient = webSearchChatClient;
 	}
 
 	@GetMapping("/random/chat")
@@ -60,6 +63,14 @@ public class RAGController {
 		String answer = chatClient.prompt()
 				.system(promptSystemSpec -> promptSystemSpec.text(hrSystemTemplate).param("documents", similarContext))
 				.advisors(a -> a.param(CONVERSATION_ID, username)).user(message).call().content();
+		return ResponseEntity.ok(answer);
+	}
+
+	@GetMapping("/web-search/chat")
+	public ResponseEntity<String> webSearchChat(@RequestHeader("username") String username,
+			@RequestParam("message") String message) {
+		String answer = webSearchChatClient.prompt().advisors(a -> a.param(CONVERSATION_ID, username)).user(message)
+				.call().content();
 		return ResponseEntity.ok(answer);
 	}
 

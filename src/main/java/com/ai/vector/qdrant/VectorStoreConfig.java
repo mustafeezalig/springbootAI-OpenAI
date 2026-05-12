@@ -1,6 +1,8 @@
 package com.ai.vector.qdrant;
 
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.ai.vectorstore.qdrant.QdrantVectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,5 +25,13 @@ public class VectorStoreConfig {
                 .collectionName("mypdf-data")
                 .initializeSchema(true)
                 .build();
+    }
+    
+    @Bean
+    @Primary
+    public ChatModel primaryChatModel(
+            OpenAiChatModel openAiChatModel) {
+
+        return openAiChatModel;
     }
 }
