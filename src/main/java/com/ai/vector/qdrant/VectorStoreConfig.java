@@ -20,7 +20,7 @@ public class VectorStoreConfig {
             @Qualifier("openAiEmbeddingModel")
             EmbeddingModel embeddingModel) {
         return QdrantVectorStore.builder(qdrantClient, embeddingModel)
-                .collectionName("my-data")
+                .collectionName("mypdf-data")
                 .initializeSchema(true)
                 .build();
     }

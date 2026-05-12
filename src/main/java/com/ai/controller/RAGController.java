@@ -27,6 +27,9 @@ public class RAGController {
 
 	@Value("classpath:/promptTemplates/systemPromptRandomDataTemplate.st")
 	private Resource promptTemplate;
+	
+	@Value("classpath:/promptTemplates/systemPromptTemplateRag.st")
+	private Resource hrSystemTemplate;
 
 	public RAGController(@Qualifier("customChatMemory") ChatClient chatClient, VectorStore vectorStore) {
 		super();
@@ -37,16 +40,25 @@ public class RAGController {
 	@GetMapping("/random/chat")
 	public ResponseEntity<String> randomChat(@RequestHeader("username") String username,
 			@RequestParam("message") String message) {
-		SearchRequest searchRequest = SearchRequest.builder()
-				.query(message)
-				.topK(3)
-				.similarityThreshold(.2)
-				.build();
+		SearchRequest searchRequest = SearchRequest.builder().query(message).topK(3).similarityThreshold(.2).build();
 		List<Document> similarDocs = vectorStore.similaritySearch(searchRequest);
 		String similarContext = similarDocs.stream().map(Document::getText)
 				.collect(Collectors.joining(System.lineSeparator()));
 		String answer = chatClient.prompt()
 				.system(promptSystemSpec -> promptSystemSpec.text(promptTemplate).param("documents", similarContext))
+				.advisors(a -> a.param(CONVERSATION_ID, username)).user(message).call().content();
+		return ResponseEntity.ok(answer);
+	}
+
+	@GetMapping("/document/chat")
+	public ResponseEntity<String> documentChat(@RequestHeader("username") String username,
+			@RequestParam("message") String message) {
+		SearchRequest searchRequest = SearchRequest.builder().query(message).topK(3).similarityThreshold(0.2).build();
+		List<Document> similarDocs = vectorStore.similaritySearch(searchRequest);
+		String similarContext = similarDocs.stream().map(Document::getText)
+				.collect(Collectors.joining(System.lineSeparator()));
+		String answer = chatClient.prompt()
+				.system(promptSystemSpec -> promptSystemSpec.text(hrSystemTemplate).param("documents", similarContext))
 				.advisors(a -> a.param(CONVERSATION_ID, username)).user(message).call().content();
 		return ResponseEntity.ok(answer);
 	}
