@@ -7,6 +7,8 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
+import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
@@ -19,12 +21,14 @@ import com.ai.controller.TokenUsageAuditAdivisor;
 
 @Configuration
 public class ChatClientConfig {
-
+ 
+	@Primary
 	@Bean("openai")
 	public ChatClient openAiChatClient(OpenAiChatModel chatModel) {
 		return ChatClient.create(chatModel);
 	}
 
+	
 	@Bean("ollama")
 	public ChatClient ollamaChatClient(OllamaChatModel ollamaChatModel) {
 		ChatClient.Builder chatClientBulder = ChatClient.builder(ollamaChatModel);
@@ -48,6 +52,13 @@ public class ChatClientConfig {
 	}
 
 	//@Primary
+	
+	@Bean
+	public ChatMemory chatMemory(JdbcChatMemoryRepository jdbcChatMemoryRepository) {
+		
+		return MessageWindowChatMemory.builder().maxMessages(10).chatMemoryRepository(jdbcChatMemoryRepository).build();
+	}
+	
 	@Bean("customChatMemory")
 	public ChatClient chatMemoryClient(OpenAiChatModel chatModel, ChatMemory chatMemory) {
 
