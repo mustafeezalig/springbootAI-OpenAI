@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.ai.ollama.api.OllamaChatOptions;
 
 import com.ai.controller.TokenUsageAuditAdivisor;
+import com.ai.vector.qdrant.PIIMaskingDocumentPostProcessor;
 
 @Configuration
 public class ChatClientConfig {
@@ -95,7 +96,7 @@ public class ChatClientConfig {
 				.queryTransformers(TranslationQueryTransformer.builder().chatClientBuilder(chatClientBuilder.clone())
 						.targetLanguage("english").build())
 				.documentRetriever(VectorStoreDocumentRetriever.builder().vectorStore(vectorStore).topK(3)
-						.similarityThreshold(0.2).build()).build();
-				//.documentPostProcessors(PIIMaskingDocumentPostProcessor.builder()).build();
+						.similarityThreshold(0.2).build())
+				.documentPostProcessors(PIIMaskingDocumentPostProcessor.builder()).build();
 	}
 }

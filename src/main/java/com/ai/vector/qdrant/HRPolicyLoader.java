@@ -26,12 +26,41 @@ public class HRPolicyLoader {
 		this.vectorStore = vectorStore;
 	}
 
+	/*
+	 * @PostConstruct public void pdfLoaderIntoVectorStore() { TikaDocumentReader
+	 * tikaDocumentReader = new TikaDocumentReader(policyFile); List<Document> docs
+	 * = tikaDocumentReader.get(); TextSplitter textSplitter =
+	 * TokenTextSplitter.builder().withChunkSize(400).withMaxNumChunks(400).build();
+	 * vectorStore.add(textSplitter.split(docs)); // vectorStore.add(docs); }
+	 */
 	@PostConstruct
 	public void pdfLoaderIntoVectorStore() {
+
 		TikaDocumentReader tikaDocumentReader = new TikaDocumentReader(policyFile);
+
 		List<Document> docs = tikaDocumentReader.get();
-		//TextSplitter textSplitter = TokenTextSplitter.builder().withChunkSize(200).withMaxNumChunks(400).build();
-		//vectorStore.add(textSplitter.split(docs));
-		 vectorStore.add(docs);
+
+		// Clean unwanted content
+		List<Document> cleanedDocs = docs.stream().map(doc -> {
+
+			String cleanedText = doc.getText()
+
+					// remove negotiation sentence
+					.replaceAll("(?i)You can negotiate this further by emailing.*", "")
+
+					// remove emails
+					.replaceAll("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", "")
+
+					// remove phone numbers
+					.replaceAll("\\+?\\d[\\d\\s\\-]{7,}\\d", "");
+
+			return new Document(cleanedText, doc.getMetadata());
+		}).toList();
+
+		TextSplitter textSplitter = TokenTextSplitter.builder().withChunkSize(500).withMaxNumChunks(500).build();
+
+		vectorStore.add(textSplitter.split(cleanedDocs));
+
+		System.out.println("Cleaned documents loaded into vector store");
 	}
 }
