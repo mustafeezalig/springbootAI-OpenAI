@@ -1,6 +1,18 @@
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: mustafeezalig@gmail.com
+    password: hksm xgrx ycpm oiut
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   ai:
     ollama:
       base-url: http://localhost:11434
       chat:
-        model: phi
+        model: phi3		
